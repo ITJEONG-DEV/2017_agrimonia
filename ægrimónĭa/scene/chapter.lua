@@ -54,7 +54,6 @@ function scene:create( event )
 
 	sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	createUI()
 
 
 end
@@ -73,7 +72,9 @@ function scene:show( event )
 		-- Code here runs when the scene is entirely on screen
 
 		-- music?`
+
 		chapterEffect.showChapter( chapterNum, chapterString[chapterNum] )
+		createUI()
 
 		timer.performWithDelay( 7700, goChat ,1 )
 

@@ -100,7 +100,7 @@ function M.showChat( chapterNum, startLineNum )
 				if text == "bell" then
 					media.playEventSound( "sound/bell.wav" )
 				elseif text == "bgm" then
-					media.playSound("sound/chapter1.mp3")
+					media.playSound("sound/Let's talk a bit.ogg")
 					goNext()
 				end
 				text = ""
@@ -115,6 +115,7 @@ function M.showChat( chapterNum, startLineNum )
 						charImage = display.newImage( "image/charIllust/player_normal.png" )
 					end
 				elseif n == 1 then
+					charImage = display.newImage( "image/charIllust/ruke_normal.png")
 				elseif n == 2 then
 				elseif n == 3 then
 				elseif n == 4 then

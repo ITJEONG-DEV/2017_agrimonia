@@ -106,9 +106,9 @@ onTouch = function(e)
 			local id = e.target.id
 
 			if id >= 1 and id <= buttonNum then
-				t3.alpha = 1
-				t3.y = t3.y + term*(position-1)
 				position = id
+				t3.alpha = 1
+				t3.y = _H*0.5 + term*(position-1)
 				goOther()
 			end
 		end
