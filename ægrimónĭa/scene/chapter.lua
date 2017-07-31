@@ -30,10 +30,13 @@ end
 local onKey, onTouch, createUI
 local bg
 local sceneGroup
-local chapterNum = 1
-local chapterTextNum = 0
+local chapterNum, chapterTextNum,isChapterStart = 1, 0, true
+
 local chapterString = { "Tales of the Wanderers", "It is Not that Soldiers Are Afraid of Death" }
-local chatNum, goChat
+local chatNum, goChat, start
+
+start = function()
+end
 
 createUI = function()
 	bg = display.newImage( sceneGroup, "image/bg/chapter1.png", _W*0.5, _H*0.5 )
@@ -42,7 +45,7 @@ end
 goChat = function()
 	chapterTextNum = chapterTextNum + 1
 
-	chat.showChat( chapterNum+1, chapterTextNum )
+	chat.showChat( chapterNum+1+1, chapterTextNum )
 end
 
 -- -----------------------------------------------------------------------------------

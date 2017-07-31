@@ -55,7 +55,7 @@ onKey = function(e)
 				id = nil
 				twinkle = nil
 
-				transition.to( t1, { time = 1000, size = 100, y = _H*0.25, transition = easing.outQuad, onComplete = turnTouchPhase } )
+				transition.to( t1, { time = 10, size = 100, y = _H*0.25, transition = easing.outQuad, onComplete = turnTouchPhase } )
 			end
 		end
 
@@ -98,7 +98,7 @@ onTouch = function(e)
 				t2:removeSelf()
 				t2, id = nil, nil
 
-				transition.to( t1, { time = 1000, size = 100, y = _H*0.25, transition = easing.outQuad, onComplete = turnTouchPhase } )
+				transition.to( t1, { time = 10, size = 100, y = _H*0.25, transition = easing.outQuad, onComplete = turnTouchPhase } )
 			end
 		end
 	elseif touchPhase == 1 then
@@ -209,12 +209,6 @@ function scene:create( event )
 
 	Runtime:addEventListener( "key", onKey )
 	Runtime:addEventListener( "touch", onTouch )
-
-	local f1 = function()
-		print("touchPhase : "..touchPhase)
-	end
-
-	-- Runtime:addEventListener( "enterFrame", f1 )
 end
 
 
@@ -231,7 +225,6 @@ function scene:show( event )
 		-- Code here runs when the scene is entirely on screen
 
 		-- music?
-
 	end
 end
 

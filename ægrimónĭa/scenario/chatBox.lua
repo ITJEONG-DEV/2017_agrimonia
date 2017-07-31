@@ -4,6 +4,7 @@ local _W, _H = display.contentWidth, display.contentHeight
 
 local textFile = require "scenario.readText"
 local font = require "font.font"
+local sound = require "sound.sound"
 
 local CC = function (hex)
 	local r = tonumber( hex:sub(1,2), 16 ) / 255
@@ -98,9 +99,9 @@ function M.showChat( chapterNum, startLineNum )
 			elseif n == -1 then
 				print(m)
 				if text == "bell" then
-					media.playEventSound( "sound/bell.wav" )
+					audio.play( sound.bell )
 				elseif text == "bgm" then
-					media.playSound("sound/Let's talk a bit.ogg")
+					audio.play( sound.bar, { loops = -1, channel = 1 })
 					goNext()
 				end
 				text = ""
@@ -108,7 +109,7 @@ function M.showChat( chapterNum, startLineNum )
 				showName.text = nameArray[n+1]
 				if n == 0 then
 					if textArray[num][3] == 1 then
-						charImage = display.newImage( "image/charIllust/player_happy.png" )
+						charImage = display.newImage( "image/charIllust/player_smile.png" )
 					elseif textArray[num][3] == 2 then
 						charImage = display.newImage( "image/charIllust/player_sad.png" )
 					else
