@@ -9,10 +9,11 @@ local scene = composer.newScene()
 
 local _W, _H = display.contentWidth, display.contentHeight
 local pH=5
-local mH=10
-local dealFlag=0
+local mH=20
 local dealed -- 딜이 들어온 방향(1=W, 2=A, 3=S, 4=D)
 local delayTime=3000
+local startFlag=0
+local dealFlag=0
 
 local CC = function (hex)
 	local r = tonumber( hex:sub(1,2), 16 ) / 255
@@ -25,9 +26,40 @@ local CC = function (hex)
 	return r, g, b, a
 end
 
-function mobDealing(event)
+function delaying()
+	dealFlag=0
+end
+
+function dealingQ()
+	mH=mH-1
+	timer.performWithDelay(600, delaying, 1)
+end
+
+function dealingE()
+	mH=mH-4
+	timer.performWithDelay(1200, delaying, 1)
+end
+
+function subPlayer() -- 플레이어 체력 깎음
+	pH=pH-1
+	if ph<=0 then
+		-- 게임오버 화면을 띄웁시다
+	end
+end
+
+function mobDealing(event) -- 공격 들어올 방향 정함
 	math.randomseed(os.time())
 	dealed=math.random(4)
+	dealFlag==0
+	if delayTime>=600 then
+		delayTime=delayTime-300
+	elseif delayTime>=500 then
+		delayTime=delayTime-20
+	end
+end
+
+function onGameStart()
+	timer.performWithDelay(delayTime, mobDealing, 0)
 end
 
 -- -----------------------------------------------------------------------------------
@@ -37,7 +69,6 @@ end
 --[[
 여남은 할일들
 
-공격 키 만들어놓기
 마커 띄우기
 ]]
 
@@ -64,16 +95,8 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		display.newImageRect(../image/chapter2_1game.png,_W, _H)
-		mobDealing()
-		while dealFlag==0 do
-			timer.performWithDelay(delayTime, mobDealing, 1)
-			if delayTime>=600 then
-				delayTime=delayTime-300
-			elseif delayTime>=500 then
-				delayTime=delayTime-20
-			end
-		end
+		display.newImageRect("image/chapter2_1game.png", _W, _H)
+		-- 젠장 이거 어떻게든 해야지 display.newText()
 		-- music?
 
 	end
@@ -110,24 +133,41 @@ end
 
 function onKeyEvent(e) -- 키를 입력받음
 		if e.phase=="down" then
+			if e.keyName="space" then
+				if startFlag==0 then
+					onGameStart()
+				end
+			end
 			if e.keyName=="w" then
 				if dealed~=1 then
-					pH=pH-1
+					subPlayer()
 				end
 			end
 			if e.keyName=="a" then
 				if dealed~=2 then
-					pH=pH-1
+					subPlayer()
 				end
 			end
 			if e.keyName=="s" then
 				if dealed~=3 then
-					pH=pH-1
+					subPlayer()
 				end
 			end
 			if e.keyName=="d" then
 				if dealed~=4 then
-					pH=pH-1
+					subPlayer()
+				end
+			end
+			if e.keyName="q" then
+				if dealFlag==0 then
+					dealFlag=1
+					dealingQ()
+				end
+			end
+			if e.keyName="e" then
+				if dealFlag==0 then
+					dealFlag=1
+					dealingE()
 				end
 			end
 		end
