@@ -36,6 +36,8 @@ local onKey, onSaveB
 local createSaveB
 local sceneGroup
 
+local saveB
+
 local chapterNum, chapterTextNum, isChapterStart, isEventEnded = 1, 1, true, true
 local chapterString = { "Tales of the Wanderers", "It is Not that Soldiers Are Afraid of Death" }
 
@@ -47,8 +49,6 @@ function showChat( chapterNum, startLineNum )
 
 	local createChatUI, showDialog, goNextLine, start
 	local showDialogID
-
-	local showChatG = display.newGroup()
 
 	function createChatUI()
 		chatBox = display.newImage( sceneGroup, "scenario/chatBox.png", _W*0.5, _H*0.86 )
@@ -184,11 +184,11 @@ end
 function createSaveB()
 	saveB = widget.newButton(
 	{
-			left = 0,
-			top = 0,
-			defaultFile = "image/ui/saveB.png",
-			overFile = "image/ui/saveBO.png",
-			onPress = onSaveB
+		left = 0,
+		top = 0,
+		defaultFile = "image/ui/saveB.png",
+		overFile = "image/ui/saveBO.png",
+		onPress = onSaveB
 	})
 
 	sceneGroup:insert(saveB)
