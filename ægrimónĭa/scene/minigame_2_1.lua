@@ -19,7 +19,7 @@ local bg, bg2, title, foot
 local bt1, bt2
 local mt1, mt2, mt3, mt4, mt5, mt6, mt7, mt8
 local bgm, cgm
-local hpImage=graphics.newImageSheet("image/HP_UI_strip12png", {width=128, height=128, numFrames=12})
+local hpImage=graphics.newImageSheet("image/charSprite/HP_UI_strip12png", {width=128, height=128, numFrames=12})
 local currentKnight
 local Knight={}
 local heart={}
@@ -36,7 +36,7 @@ local CC = function (hex)
 end
 
 function showImage()
-	bg=display.newImageRect("image/chapter2_1game.png", _W, _H)
+	bg=display.newImageRect("image/bg/chapter2_1game.png", _W, _H)
 	bg2=display.newRect(0, 0, _W, _H)
 	bg.anchorX=0
 	bg.anchorY=0
@@ -105,10 +105,10 @@ function onGameStart()
 	heart[3]=display.newImageRect(hpImage, 1, _W*0.2, _H*0.1)
 	heart[4]=display.newImageRect(hpImage, 1, _W*0.275, _H*0.1)
 	heart[5]=display.newImageRect(hpImage, 1, _W*0.35, _H*0.1)
-	Knight[1]=graphics.newImageSheet("image/fromUp.png", {width=640, height-360, numFrames=4})
-	Knight[2]=graphics.newImageSheet("image/fromLeft.png", {width=640, height-360, numFrames=3})
-	Knight[3]=graphics.newImageSheet("image/fromDown.png", {width=640, height-360, numFrames=3})
-	Knight[4]=graphics.newImageSheet("image/fromRight.png", {width=640, height-360, numFrames=3})
+	Knight[1]=graphics.newImageSheet("image/charSprite/fromUp.png", {width=640, height-360, numFrames=4})
+	Knight[2]=graphics.newImageSheet("image/charSprite/fromLeft.png", {width=640, height-360, numFrames=3})
+	Knight[3]=graphics.newImageSheet("image/charSprite/fromDown.png", {width=640, height-360, numFrames=3})
+	Knight[4]=graphics.newImageSheet("image/charSprite/fromRight.png", {width=640, height-360, numFrames=3})
 	currentKnight=display.newImageRect(Knight[1], 1, _W*0.5, _H*0.5)
 	timer.performWithDelay(delayTime, mobDealing, 0)
 end
@@ -181,40 +181,40 @@ function scene:destroy( event )
 
 end
 
-function onKeyEvent(e) -- 키를 입력받음
-	if e.phase=="down" then
-		if e.keyName="space" then
+function onKeyEvent(event) -- 키를 입력받음
+	if event.phase=="down" then
+		if event.keyName="space" then
 			if startFlag==0 then
 				onGameStart()
 			end
 		end
-		if e.keyName=="w" then
+		if event.keyName=="w" then
 			if mobFlag==1 and dealed~=1 then
 				subPlayer()
 			end
 		end
-		if e.keyName=="a" then
+		if event.keyName=="a" then
 			if mobFlag==1 and dealed~=2 then
 				subPlayer()
 			end
 		end
-		if e.keyName=="s" then
+		if event.keyName=="s" then
 			if mobFlag==1 and dealed~=3 then
 				subPlayer()
 			end
 		end
-		if e.keyName=="d" then
+		if event.keyName=="d" then
 			if mobFlag==1 and dealed~=4 then
 				subPlayer()
 			end
 		end
-		if e.keyName="q" then
+		if event.keyName="q" then
 			if dealFlag==0 then
 				dealFlag=1
 				dealingQ()
 			end
 		end
-		if e.keyName="e" then
+		if event.keyName="e" then
 			if dealFlag==0 then
 				dealFlag=1
 				dealingE()
