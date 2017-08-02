@@ -1,5 +1,6 @@
 local composer = require "composer" 
 local font = require "font.font"
+local data = require "data.data"
 local scene = composer.newScene()
 
 -- -----------------------------------------------------------------------------------
@@ -20,48 +21,9 @@ local CC = function (hex)
 	return r, g, b, a
 end
 
-local path = system.pathForFile( "temmie.txt", system.DocumentsDirectory )
 -- -----------------------------------------------------------------------------------
 -- basic settttting!
 -- -----------------------------------------------------------------------------------
-function save()
-	--[[
-	local desktopPath = os.getenv("appdata")
-	local appDataStart = string.find( desktopPath, "AppData" )
-	if appDataStart then
-		desktopPath = string.sub( desktopPath, 1, appDataStart-1 )
-		desktopPath = desktopPath .. "Desktop\\"
-	end
-	]]--
-	print("path : "..path)
-
-	local file, errorString = io.open( path, "w" )
-
-	if not file then
-		print( "File error : " .. errorString )
-	else
-		file:write("hOI!! idfaffm Temmie!!!")
-		io.close(file)
-	end
-
-	file = nil	
-end
-
-function load()
-	local file, errorString = io.open( path, "r" )
-
-	if not file then
-		print( "File error : " .. errorString )
-	else
-		local contents = file:read( "*a" )
-
-		print("Content of " .. path .. "\n" .. contents )
-
-		io.close( file )
-	end
-
-	file = nil
-end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -87,10 +49,8 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		save()
-		load()
 		-- music?
-
+		data.popUp("save")
 	end
 end
 

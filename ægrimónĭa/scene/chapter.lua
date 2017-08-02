@@ -34,9 +34,11 @@ end
 local showChat, start, goChatBox
 local onKey, onSaveB
 local createSaveB
-local sceneGroup
+local sceneGroup = display.newGroup( )
 
 local saveB
+
+local bg
 
 local chapterNum, chapterTextNum, isChapterStart, isEventEnded = 1, 1, true, true
 local chapterString = { "Tales of the Wanderers", "It is Not that Soldiers Are Afraid of Death" }
@@ -87,6 +89,7 @@ function showChat( chapterNum, startLineNum )
 			if n == -1 then
 				chatBox.alpha = 0
 				if text == "bell" then
+					-- data.popUp()
 					text = ""
 					audio.play( sound.bell, { duration = 2500, onComplete = goNext, channel = 1 } )
 				elseif text == "bgm" then
@@ -188,10 +191,8 @@ function createSaveB()
 		top = 0,
 		defaultFile = "image/ui/saveB.png",
 		overFile = "image/ui/saveBO.png",
-		onPress = onSaveB
+		onRelease = onSaveB
 	})
-
-	sceneGroup:insert(saveB)
 
 	saveB:scale(0.5, 0.5)
 end
@@ -258,6 +259,7 @@ function start()
 		sceneGroup:insert( bg )
 	else
 	end
+	sceneGroup:insert(saveB)
 	saveB:toFront( )
 end
 

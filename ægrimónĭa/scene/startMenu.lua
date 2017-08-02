@@ -169,8 +169,10 @@ createUI = function()
 end
 
 onStartB = function( )
-	composer.removeScene( "scene.chapter" )
-	composer.gotoScene( "scene.chapter", { time = 800, effect = "crossFade" } )
+	composer.removeScene( "scene.prologue" )
+	composer.gotoScene( "scene.prologue", { time = 800, effect = "crossFade" } )
+	--composer.removeScene( "scene.chapter" )
+	--composer.gotoScene( "scene.chapter", { time = 800, effect = "crossFade" } )
 end
 
 onLoadB = function( )
