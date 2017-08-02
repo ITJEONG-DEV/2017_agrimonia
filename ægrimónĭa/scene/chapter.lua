@@ -30,7 +30,7 @@ end
 local onKey, onTouch, createUI
 local bg
 local sceneGroup
-local chapterNum, chapterTextNum,isChapterStart, isEventEnded = 1, 1, true, true
+local chapterNum, chapterTextNum, isChapterStart, isEventEnded = 1, 1, true, true
 
 local chapterString = { "Tales of the Wanderers", "It is Not that Soldiers Are Afraid of Death" }
 local chatNum, goChat, start
@@ -43,21 +43,50 @@ start = function()
 			if bg then bg:removeSelf() end
 
 			if chapterNum == 1 then
-				bg = display.newImage( "image/bg/chapter1.png" )
+				bg = display.newImage( "image/bg/bar.png" )
+
+				chapterEffect.showChapter( chapterNum, chapterString[chapterNum] )
+				timer.performWithDelay( 7700, goChat ,1 )
+
 			
 			elseif chapterNum == 2 then
 				if chapterTextNum == 1 then
-					bg = displya.newRect( 0, 0, _W, _H )
-					bg:setFillColor( CC("000000") )	
-				elseif chapterTextNum == 2 then
-				elseif chapterTextNum == 4 then
+					bg = display.newRect( 0, 0, _W, _H )
+					bg:setFillColor( CC("000000") )
+
+					chapterEffect.showChapter( chapterNum, chapterString[chapterNum] )
+
+					timer.performWithDelay( 7700, goChat ,1 )
+				elseif chaptertextNum == 5 then
+					bg = display.newRect( 0, 0, _W, _H )
+					bg:setFillColor( CC("000000") )
+				elseif chapterTextNum == 6 or chapterTextNum == 10 or chapterTextNum == 12 or chapterTextNum == 14 then
+					bg = display.newImage( "image/bg/bar.png" )
+				elseif chapterTextNum == 7 or chapterTextNum == 11 or chapterTextNum == 13 then
+					-- in house
 				end
 			elseif chapterNum == 3 then
 			end
+
 		else
 			if chapterNum == 2 then
-				if chapterTextNum == 3 then
+				if chapterTextNum == 1 then
+				elseif chapterTextNum == 2 then
+					-- 병사 시험 장면
+
+				elseif chapterTextNum == 3 then
+					-- 전투
+
+				elseif chapterTextNum == 4 then
+					-- 몇 걸음 걸어간다
+
+				elseif chapterTextNum == 5 then
+					-- A가 뛴다
+
+				elseif chapterTextNum == 8 then
+					-- 루크가 움직인당
 				end
+
 			elseif chapterNum == 3 then
 			end
 		end
@@ -67,13 +96,9 @@ start = function()
 	end
 end
 
-createUI = function()
-end
-
 goChat = function()
-	chapterTextNum = chapterTextNum + 1
-
 	chat.showChat( chapterNum, chapterTextNum )
+	chapterTextNum = chapterTextNum + 1
 end
 
 -- -----------------------------------------------------------------------------------
@@ -85,7 +110,6 @@ function scene:create( event )
 
 	sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-
 
 end
 
@@ -104,10 +128,8 @@ function scene:show( event )
 
 		-- music?`
 
-		chapterEffect.showChapter( chapterNum, chapterString[chapterNum] )
-		createUI()
+		start()
 
-		timer.performWithDelay( 7700, goChat ,1 )
 
 	end
 end

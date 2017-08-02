@@ -21,7 +21,7 @@ end
 -- code start
 -- -----------------------------------------------------------------------------------
 function M.showChat( chapterNum, startLineNum )
-	local textArray = textFile[chapterNum+1][startLineNum]
+	local textArray = textFile[chapterNum+2][startLineNum]
 	local nameArray = textFile[1]
 
 	local showChatG = display.newGroup()
@@ -32,6 +32,7 @@ function M.showChat( chapterNum, startLineNum )
 	local isCurrentTextEnded
 	local num = 0
 	local charImage	
+	local hereSound
 
 	--chat ui
 	function createChatUI()
@@ -63,8 +64,14 @@ function M.showChat( chapterNum, startLineNum )
 	function showDialog(e)
 		id = e.source
 		if string.len(showText.text) == string.len(text) then
-			timer.cancel(id)
-			isCurrentTextEnded = true
+			if textArray[num][3] == - 1 then
+				showText.text = ""
+				num = num + 1
+				text = textArray[num][2]
+			else
+				timer.cancel(id)
+				isCurrentTextEnded = true
+			end
 		end
 
 		showText.text = showText.text .. text:sub( string.len(showText.text)+1, string.len(showText.text)+3 )	
@@ -78,6 +85,7 @@ function M.showChat( chapterNum, startLineNum )
 	end
 
 	function goNext()
+		chatBox.alpha = 1
 		isCurrentTextEnded = false
 		num = num + 1
 		showName.text = ""
@@ -92,46 +100,51 @@ function M.showChat( chapterNum, startLineNum )
 			local n = textArray[num][1]
 			text = textArray[num][2]
 
-			if n == nil then
-				if textArray[num][3] then
-					showName.text = nameArray[ textArray[num][3] + 1 ]
-				end
-			elseif n == -1 then
-				print(m)
+			if n == -1 then
+				chatBox.alpha = 0
 				if text == "bell" then
-					audio.play( sound.bell )
+					text = ""
+					audio.play( sound.bell, { duration = 2500, onComplete = goNext, channel = 1 } )
 				elseif text == "bgm" then
+					text = ""
 					audio.play( sound.bar, { loops = -1, channel = 1 })
 					goNext()
 				end
-				text = ""
 			else
-				showName.text = nameArray[n+1]
-				if n == 0 then
-					if textArray[num][3] == 1 then
-						charImage = display.newImage( "image/charIllust/player_smile.png" )
-					elseif textArray[num][3] == 2 then
-						charImage = display.newImage( "image/charIllust/player_sad.png" )
-					else
-						charImage = display.newImage( "image/charIllust/player_normal.png" )
+				if n == nil then
+					if textArray[num][3] then
+						showName.text = nameArray[ textArray[num][3] + 1 ]
 					end
-				elseif n == 1 then
-					charImage = display.newImage( "image/charIllust/ruke_normal.png")
-				elseif n == 2 then
-				elseif n == 3 then
-				elseif n == 4 then
-				elseif n == 5 then
-				elseif n == 6 then
-				end
-			end
-			if charImage then
-				charImage.x, charImage.y = _W*0.5, _H-charImage.contentHeight*0.75*0.8/2
-				charImage:scale(0.75,0.75)
-				showChatG:insert(charImage)
-				charImage:toBack()
-			end
 
-			timer.performWithDelay( 100, showDialog, -1 )
+				else
+					showName.text = nameArray[n+1]
+					if n == 0 then
+						if textArray[num][3] == 1 then
+							charImage = display.newImage( "image/charIllust/player_smile.png" )
+						elseif textArray[num][3] == 2 then
+							charImage = display.newImage( "image/charIllust/player_sad.png" )
+						else
+							charImage = display.newImage( "image/charIllust/player_normal.png" )
+						end
+					elseif n == 1 then
+						charImage = display.newImage( "image/charIllust/ruke_normal.png")
+					elseif n == 2 then
+					elseif n == 3 then
+					elseif n == 4 then
+					elseif n == 5 then
+					elseif n == 6 then
+					end
+				end
+
+				if charImage then
+					charImage.x, charImage.y = _W*0.5, _H-charImage.contentHeight*0.75*0.8/2
+					charImage:scale(0.75,0.75)
+					showChatG:insert(charImage)
+					charImage:toBack()
+				end
+
+				timer.performWithDelay( 100, showDialog, -1 )
+			end
 		else
 			if id then timer.cancel(id) end
 			if id2 then timer.cancel(id2) end

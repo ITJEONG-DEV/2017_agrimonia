@@ -1,6 +1,7 @@
 local composer = require "composer" 
 local font = require "font.font"
 local widget = require "widget"
+local sound = require "sound.sound"
 
 local scene = composer.newScene()
 
@@ -25,13 +26,31 @@ end
 -- -----------------------------------------------------------------------------------
 -- basic settttting!
 -- -------------------------------------------------------------------- 
-local twinkle, onKey, onTouch, createUI, onStartB, onLoadB, onExitB, goOther, turnTouchPhase
-local bg, BD, BD2, t1, t2, t3, b0, b1, b2, b3, b4, id
+local twinkle, onKey, onTouch, createUI, onStartB, onLoadB, onExitB, goOther, turnTouchPhase, BDtran
+local bg, BD, BD2, t1, t2, t3, b0, b1, b2, b3, b4, id, id2
 local isFirst = true
 local twinklePhase, touchPhase = 1, 0
 local position = 1
 local sceneGroup
 local buttonNum, term = 3, 100
+local t = 1500
+local hereSound
+
+BDtran = function(e)
+	id2 = e.source
+	local m = 1
+	transition.to( BD, { alpha = 0.8, time = t, transition = easing.inQuad } )
+	transition.to( BD2, { alpha = 0, time = t, transition = easing.outQuad } )
+
+	transition.to( BD, { x = BD.x + m, y = BD.y - m, time = t, transition = easing.inQuad } )
+	transition.to( BD2, { x = BD2.x - m, y = BD2.y + m, time = t, transition = easing.inQuad } )
+
+	transition.to( BD, { alpha = 0, time = t, delay = t*1.5, transition = easing.outQuad } )
+	transition.to( BD2, { alpha = 0.8, time = t, delay = t*1.5, transition = easing.inQuad } )
+
+	transition.to( BD, { x = BD.x - m, y = BD.y + m, time = t, delay = t*1.5, transition = easing.inQuad } )
+	transition.to( BD2, { x = BD2.x + m, y = BD2.y - m, time = t, delay = t*1.5, transition = easing.inQuad } )
+end
 
 twinkle = function(e)
 	id = e.source
@@ -194,6 +213,9 @@ function scene:create( event )
 
 	BD2 = display.newImage( sceneGroup, "image/bg/BD.png", _W*0.5, _H*0.5 )
 	BD2.rotation = 180
+	BD2.alpha = 0.8
+
+	timer.performWithDelay( t*3, BDtran, 0 )
 
 	-- t1 = display.newText( sceneGroup, "ægrimónĭa", _W*0.5, _H*0.35, font.vectra, 120)
 	t1 = display.newText( sceneGroup, "ægrimónia", _W*0.5, _H*0.35, font.vectra, 130)
@@ -209,6 +231,8 @@ function scene:create( event )
 
 	Runtime:addEventListener( "key", onKey )
 	Runtime:addEventListener( "touch", onTouch )
+
+	hereSound = audio.play( sound.start, { fadein = 3500, loops = -1 } )
 end
 
 
@@ -237,6 +261,8 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
+		audio.fadeOut( { time = 2000 } )
+
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
@@ -253,7 +279,6 @@ function scene:destroy( event )
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
 
-	-- audio.dipose( musicTrack )
 	b0 = nil
 
 end
