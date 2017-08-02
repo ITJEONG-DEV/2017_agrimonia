@@ -30,22 +30,50 @@ end
 local onKey, onTouch, createUI
 local bg
 local sceneGroup
-local chapterNum, chapterTextNum,isChapterStart = 1, 0, true
+local chapterNum, chapterTextNum,isChapterStart, isEventEnded = 1, 1, true, true
 
 local chapterString = { "Tales of the Wanderers", "It is Not that Soldiers Are Afraid of Death" }
 local chatNum, goChat, start
 
 start = function()
+	-- isEventEnded : 씬을 바꿀 일이 있냐?
+	-- isChapterStart : 새로운 챕터를 시작해야 하냐? ( 대화위주 )
+	if isEventEnded then
+		if isChapterStart then
+			if bg then bg:removeSelf() end
+
+			if chapterNum == 1 then
+				bg = display.newImage( "image/bg/chapter1.png" )
+			
+			elseif chapterNum == 2 then
+				if chapterTextNum == 1 then
+					bg = displya.newRect( 0, 0, _W, _H )
+					bg:setFillColor( CC("000000") )	
+				elseif chapterTextNum == 2 then
+				elseif chapterTextNum == 4 then
+				end
+			elseif chapterNum == 3 then
+			end
+		else
+			if chapterNum == 2 then
+				if chapterTextNum == 3 then
+				end
+			elseif chapterNum == 3 then
+			end
+		end
+		bg.x, bg.y = _W*0.5, _H*0.5
+		sceneGroup:insert( bg )
+	else
+	end
 end
 
 createUI = function()
-	bg = display.newImage( sceneGroup, "image/bg/chapter1.png", _W*0.5, _H*0.5 )
 end
 
 goChat = function()
 	chapterTextNum = chapterTextNum + 1
 
-	chat.showChat( chapterNum+1+1, chapterTextNum )
+	chat.showChat( chapterNum, chapterTextNum )
 end
 
 -- -----------------------------------------------------------------------------------
