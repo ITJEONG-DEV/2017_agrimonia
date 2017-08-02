@@ -2,13 +2,12 @@ local json = require "json"
 
 local M = {}
 
-local path = system.pathForFile( "data.txt", system.ResourceDirectory )
-
-
-function M.saveData( data )
+function M.saveData( data, num )
+	local path = system.pathForFile( "data"..num..".txt", system.ResourceDirectory )
 	local encoded = json.encode( data )
 
 	local file, errorString = io.open( path, "w" )
+	print(path)
 
 	if not file then
 		print("File error : ".. errorString )
@@ -20,7 +19,8 @@ function M.saveData( data )
 	end
 end
 
-function M.loadData()
+function M.loadData( num )
+	local path = system.pathForFile( "data"..num..".txt", system.ResourceDirectory )
 	local file, errorString = io.open( path, "r" )
 
 	if not file then

@@ -64,14 +64,8 @@ function M.showChat( chapterNum, startLineNum )
 	function showDialog(e)
 		id = e.source
 		if string.len(showText.text) == string.len(text) then
-			if textArray[num][3] == - 1 then
-				showText.text = ""
-				num = num + 1
-				text = textArray[num][2]
-			else
 				timer.cancel(id)
 				isCurrentTextEnded = true
-			end
 		end
 
 		showText.text = showText.text .. text:sub( string.len(showText.text)+1, string.len(showText.text)+3 )	
