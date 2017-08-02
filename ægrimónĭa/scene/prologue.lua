@@ -1,5 +1,6 @@
 local composer = require "composer" 
 local font = require "font.font"
+local text = require "scenario/readText"
 local scene = composer.newScene()
 
 -- -----------------------------------------------------------------------------------
@@ -19,6 +20,17 @@ local CC = function (hex)
 
 	return r, g, b, a
 end
+local currentLine=0
+local bg, currentText, outer, inner, tiimer, going
+local textArray=text[2][currentLine]
+
+function goTo(event)
+	currentLine=currentLine+1
+	if currentLine > table.maxn(text[2]) then timer.cancel(tiimer) end
+	currentText.text=text[2][currentLine]
+	inner=transition.fadeIn(currentText, {time = 1000})
+	outer=transition.fadeOut(currentText, {delay = 5000, time = 1000, onComplete = goTo})
+end
 
 -- -----------------------------------------------------------------------------------
 -- basic settttting!
@@ -34,7 +46,7 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-
+	tiimer=timer.performWithDelay(6000, goTo, -1)
 end
 
 
@@ -49,7 +61,12 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-
+		bg=display.newImage("image/bg/prolog.png", _W*0.5, _H*0.5)
+		currentText=display.newText("", _W*0.5, _H*0.5, font.squareEB, 30)
+		currentText:setTextColor(0,0,0)
+		currentText.align="center"
+		outer=transition.fadeOut(currentText, {delay=2000})
+		composer.gotoScene("chapter")
 		-- music?
 
 	end
