@@ -77,7 +77,7 @@ function dealingE()
 end
 
 function subPlayer() -- 플레이어 체력 깎음
-	heart[pH]=display.newSprite(hpImage, {name="dying"})
+	heart[pH]=display.newSprite(hpImage, {name="dying" start=1, count=12, time=100, loopCount=1, loopDirection="forward"})
 	mobFlag=0
 	if pH>=1 then
 		pH=pH-1
@@ -90,7 +90,7 @@ function mobDealing(event) -- 공격 들어올 방향 정함
 	math.randomseed(os.time())
 	dealed=math.random(4)
 	mobFlag=1
-	currentKnight=display.newSprite(Knight[dealed], {name="dealing", time=800})
+	currentKnight=display.newSprite(Knight[dealed], {name="dealing", start=1, count=3, time=800, loopCount=1, loopDirection="forward"})
 	dealFlag=0
 	if delayTime>=600 then
 		delayTime=delayTime-300
@@ -105,10 +105,10 @@ function onGameStart()
 	heart[3]=display.newImageRect(hpImage, 1, _W*0.2, _H*0.1)
 	heart[4]=display.newImageRect(hpImage, 1, _W*0.275, _H*0.1)
 	heart[5]=display.newImageRect(hpImage, 1, _W*0.35, _H*0.1)
-	Knight[1]=graphics.newImageSheet("image/charSprite/fromUp.png", {width=640, height-360, numFrames=4})
-	Knight[2]=graphics.newImageSheet("image/charSprite/fromLeft.png", {width=640, height-360, numFrames=3})
-	Knight[3]=graphics.newImageSheet("image/charSprite/fromDown.png", {width=640, height-360, numFrames=3})
-	Knight[4]=graphics.newImageSheet("image/charSprite/fromRight.png", {width=640, height-360, numFrames=3})
+	Knight[1]=graphics.newImageSheet("image/charSprite/fromUp.png", {width=640, height=360, numFrames=4})
+	Knight[2]=graphics.newImageSheet("image/charSprite/fromLeft.png", {width=640, height=360, numFrames=3})
+	Knight[3]=graphics.newImageSheet("image/charSprite/fromDown.png", {width=640, height=360, numFrames=3})
+	Knight[4]=graphics.newImageSheet("image/charSprite/fromRight.png", {width=640, height=360, numFrames=3})
 	currentKnight=display.newImageRect(Knight[1], 1, _W*0.5, _H*0.5)
 	timer.performWithDelay(delayTime, mobDealing, 0)
 end
@@ -191,21 +191,29 @@ function onKeyEvent(event) -- 키를 입력받음
 		if event.keyName=="w" then
 			if mobFlag==1 and dealed~=1 then
 				subPlayer()
+			else
+				mobFlag=0
 			end
 		end
 		if event.keyName=="a" then
 			if mobFlag==1 and dealed~=2 then
 				subPlayer()
+			else
+				mobFlag=0
 			end
 		end
 		if event.keyName=="s" then
 			if mobFlag==1 and dealed~=3 then
 				subPlayer()
+			else
+				mobFlag=0
 			end
 		end
 		if event.keyName=="d" then
 			if mobFlag==1 and dealed~=4 then
 				subPlayer()
+			else
+				mobFlag=0
 			end
 		end
 		if event.keyName="q" then
