@@ -233,6 +233,15 @@ function showChat( chapterNum, startLineNum )
 					text = ""
 					audio.play( sound.arena, { loops = -1 } )
 					goNext()
+				elseif text == "guest1" then
+					text = ""
+					bg:removeSelf()
+					bg = display.newImage( sceneGroup, "image/bg/bar2.png", _W*0.5, _H*0.5 )
+					goNext()
+				elseif text == "guest2" then
+					text = ""
+				elseif text == "guest3" then
+					text = ""
 				end
 			else
 				if n == nil then
@@ -270,7 +279,22 @@ function showChat( chapterNum, startLineNum )
 						else
 							charImage = display.newImage( "image/charIllust/ruke_normal.png" )
 						end
-					elseif n == 3 then
+					elseif n == 2 or n == 9 then
+						if m == 1 then --smile
+							charImage = display.newImage( "image/charIllust/hr_smile.png")
+						elseif m == 2 then --chimul
+							charImage = display.newImage( "image/charIllust/hr_chimul.png")
+						elseif m == 3 then --sur
+							charImage = display.newImage( "image/charIllust/hr_sur.png")
+						elseif m == 5 then --sur
+							charImage = display.newImage( "image/charIllust/hr_sur.png")
+						elseif m == 6 then --sad
+							charImage = display.newImage( "image/charIllust/hr_sad.png")
+						elseif m == 7 then --jichim 
+							charImage = display.newImage( "image/charIllust/hr_jichim.png")
+						else
+							charImage = display.newImage( "image/charIllust/hr_normal.png")
+						end
 					elseif n == 4 then
 						charImage = display.newImage( "image/charIllust/peris_armed.png")
 					elseif n == 6 then
@@ -354,17 +378,19 @@ function whatIsNext()
 	if currentData.isEventEnded then
 		if not currentData.isChapterStart then
 			currentData.isChapterStart = false
+			if chapterTextNum == 1 then isFirst = true end
 
 			if ( not isFirst or not isEventEnded ) and bg then
 				bg:removeSelf()
 				bg = nil
+				isFirst = true
 			else
 				isFirst = false
 			end
 
 			if currentData.chapterNum == 1 then
 				if currentData.chapterTextNum == 1 then
-					bg = display.newImage( "image/bg/bar.png" )
+					bg = display.newImage( "image/bg/bar1.png" )
 
 					chapterEffect.showChapter( 1, chapterString[1] )
 					timer.performWithDelay( 7700, goChatBox, 1 )
@@ -381,13 +407,12 @@ function whatIsNext()
 
 				elseif currentData.chapterTextNum == 2 then
 					bg = display.newImage( "image/bg/arena.png" )
-					bg:scale(2,2)
 
 				elseif currentData.chapterTextNum == 5 then
 					bg = display.newRect( 0, 0, _W, _H )
 					bg:setFillColor( CC("000000") )
 				elseif currentData.chapterTextNum == 6 or currentData.chapterTextNum == 10 or currentData.chapterTextNum == 12 or currentData.chapterTextNum == 14 then
-					bg = display.newImage( "image/bg/bar.png" )
+					bg = display.newImage( "image/bg/bar2.png" )
 				elseif currentData.chapterTextNum == 7 or currentData.chapterTextNum == 11 or currentData.chapterTextNum == 13	then
 					bg = display.newSprite( bgSheet, bgData )
 				end
@@ -409,6 +434,8 @@ function whatIsNext()
 		if currentData.chapterNum == 2 then
 			if currentData.chapterTextNum == 3 then
 				-- battle
+				composer.removeScene( "scene.minigame2_1" )
+				composer.gotoScene( "scene.minigame2_1", { time = 1600, effect = "crossFade" } )
 			elseif currentData.chapterTextNum == 4 then
 				-- step by step
 			elseif currentData.chapterTextNum == 5 then
@@ -433,9 +460,9 @@ function scene:create( event )
 
 	sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	bgData = { width = 640, height = 360, numFrames = 4, sheetContentWidth = 2560, sheetContentHeight = 360 }
+	bgData = { width = 1280, height = 720, numFrames = 4, sheetContentWidth = 5120, sheetContentHeight = 720 }
 	bgSet = { name = "default", start = 1, count = 4, time = 1000, loopCount = 0 }
-	bgSheet = graphics.newImageSheet( "image/bg/ruke_house.png", bgData )
+	bgSheet = graphics.newImageSheet( "image/bg/ruke_house_strip4.png", bgData )
 
 end
 

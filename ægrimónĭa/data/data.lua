@@ -231,6 +231,7 @@ function checkData()
 	for i = 1, 4, 1 do
 		if data[i][1] == "Empty" then
 			saveText[i][2].text = data[i][1]
+			b[i]:setEnabled( false )
 		else
 			saveText[i][1].text = data[i].date
 			saveText[i][2].text = "chapter "..data[i].chapterNum
