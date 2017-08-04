@@ -2,6 +2,7 @@ local composer = require "composer"
 local font = require "font.font"
 local widget = require "widget"
 local sound = require "sound.sound"
+local data = require "data.data"
 
 local scene = composer.newScene()
 
@@ -169,6 +170,7 @@ createUI = function()
 end
 
 onStartB = function( )
+	audio.fadeOut( { time = 2000 } )
 	composer.removeScene( "scene.prologue" )
 	composer.gotoScene( "scene.prologue", { time = 800, effect = "crossFade" } )
 	--composer.removeScene( "scene.chapter" )
@@ -176,8 +178,7 @@ onStartB = function( )
 end
 
 onLoadB = function( )
-	composer.removeScene( "scene.loadFile" )
-	composer.gotoScene( "scene.loadFile", { time = 800, effect= "crossFade"} )
+	data.popUp("load")
 end
 
 onExitB = function( )
@@ -263,13 +264,13 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		audio.fadeOut( { time = 2000 } )
 
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 
 		-- stop audio
+		audio.stop( )
 
 	end
 end
@@ -280,9 +281,29 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	Runtime:removeEventListener( "key", onKey )
+	Runtime:removeEventListener( "touch", onTouch )
+	b1:removeSelf()
+	b2:remoevSelf()
+	b3:removeSelf()
+	bg:removeSelf()
+	BD:removeSelf()
+	BD2:removeSelf()
+	t1:removeSelf()
+	t2:removeSelf()
+	t3:removeSelf()
 
 	b0 = nil
-
+	b1 = nil
+	b2 = nil
+	b3 = nil
+	bg = nil
+	BD = nil
+	BD2 = nil
+	t1 = nil
+	t2 = nil
+	t3 = nil
+	b0 = nil
 end
 
 

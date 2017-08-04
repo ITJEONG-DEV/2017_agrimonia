@@ -1,6 +1,7 @@
 local composer = require "composer" 
 local font = require "font.font"
 local text = require "scenario.readText"
+local data = require "data.data"
 local scene = composer.newScene()
 
 -- -----------------------------------------------------------------------------------
@@ -24,7 +25,12 @@ local currentLine=0
 local bg, currentText, outer, inner, tiimer, going, start,id
 local textArray=text[2]
 local flag = true
-local t = 1000
+local t = 20
+
+function saveMove()
+	composer.removeScene( "scene.loadFile" )
+	composer.gotoScene("scene.loadFile", { time = t * 0.8, effect = "crossFade" })	
+end
 
 function goTo(event)
 	currentLine=currentLine+1
@@ -32,9 +38,16 @@ function goTo(event)
 	if currentLine > table.maxn(text[2]) then
 		timer.cancel(tiimer)
 		bg:removeSelf()
-		bg = nil
-		composer.removeScene( "scene.chapter" )
-		composer.gotoScene("scene.chapter", { time = t * 0.8, effect = "crossFade" })
+		currentText:removeSelf()
+		data.saveData( 1, 
+			{
+				chapterNum = 1,
+				chapterTextNum = 1,
+				isChapterStart = false,
+				isEventEnded = true,
+				date = ""
+			})
+		timer.performWithDelay( 1000, saveMove, 1 )
 	end
 	inner=transition.fadeIn(currentText, {time = t})
 	outer=transition.fadeOut(currentText, {delay = 5*t, time = t})
@@ -45,9 +58,6 @@ function start()
 		tiimer=timer.performWithDelay(6*t, goTo, -1)
 		flag = false
 	end
-	bg=display.newImage("image/bg/prolog.png", _W*0.5, _H*0.5)
-	bg.alpha = 0
-	transition.fadeIn(bg, {delay = 1500, time=1000})
 	currentText=display.newText("",_W*0.5, _H*0.5, font.squareEB, 50)
 	currentText:setTextColor(0,0,0)
 	currentText.align="center"
@@ -68,7 +78,9 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	start()
+	bg=display.newImage("image/bg/prolog.png", _W*0.5, _H*0.5)
+	bg.alpha = 0
+	transition.to( bg, { delay = 1000, time = 1500, alpha = 1, onComplete = start })
 end
 
 
@@ -112,6 +124,12 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	bg = nil
+	currentText = nil
+	flag = nil
+	timer = nil
+	inner = nil
+	outer = nil
 
 end
 

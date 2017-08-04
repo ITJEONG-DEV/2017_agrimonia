@@ -24,7 +24,59 @@ end
 -- -----------------------------------------------------------------------------------
 -- basic settttting!
 -- -----------------------------------------------------------------------------------
+local createUI, goChapter, circling
 
+local img
+local BD
+local bg, bgData, bgSet, bgSheet
+local count = 0
+
+function goChapter()
+	composer.removeScene( "scene.chapter" )
+	composer.gotoScene( "scene.chapter", { time = 1600, effect = "crossFade" } )
+end
+
+function circling(e)
+	if e.phase == "ended" then
+		timer.performWithDelay( 50, goChapter, 1 )
+	end
+end
+
+function createUI()
+	bgData =
+	{
+		width = 250, 
+		height = 50, 
+		numFrames = 8, 
+		sheetContentWidth = 2000, 
+		sheetContentHeight = 50 
+	}
+	
+	bgSet = 
+	{ 
+		{
+			name = "default", 
+			frames = { 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8 }, 
+			time = 6000, 
+			loopCount = 1 }
+	}
+	
+	bgSheet = graphics.newImageSheet( "image/ui/loading.png", bgData )
+	
+	bg = display.newSprite( bgSheet, bgSet )
+
+	bg:addEventListener( "sprite", circling )
+
+	bg.x, bg.y = _W*0.5, _H*0.5
+	
+	bg:play()
+
+	bg:scale(2,2)
+
+	--img = display.newImage("image/charIllust/player_happy.png")
+	--BD = display.newImage("image/bg/BD.png")
+
+end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -50,8 +102,7 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-
-		-- music?
+		createUI()
 
 	end
 end
@@ -70,6 +121,11 @@ function scene:hide( event )
 		-- Code here runs immediately after the scene goes entirely off screen
 
 		-- stop audio
+		bg:removeSelf()
+		bgSheet = nil
+		bgData = nil
+		bgSet = nil
+		bg = nil
 
 	end
 end

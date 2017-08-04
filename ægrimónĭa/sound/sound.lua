@@ -7,5 +7,9 @@ M.defend = audio.loadSound("sound/defendGood.wav")
 M.hurt = audio.loadSound("sound/ImTooHurt.wav")
 M.Qdeal = audio.loadSound("sound/Qdeal.wav")
 M.Edeal = audio.loadSound("sound/Edeal.wav")
+M.bell = audio.loadSound("sound/bell.wav")
+M.bar = audio.loadSound("sound/Let's talk a bit.ogg")
+M.start = audio.loadSound("sound/start.mp3")
+M.arena = audio.loadSound( "sound/amuten.mp3")
 
 return M

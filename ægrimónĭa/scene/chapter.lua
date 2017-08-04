@@ -29,28 +29,158 @@ end
 
 -- -----------------------------------------------------------------------------------
 -- chatting Modules
--- -------------------------------------------------------------------- 
-
-local showChat, start, goChatBox
-local onKey, onSaveB
-local createSaveB
-local sceneGroup = display.newGroup( )
-
-local saveB
-
-local bg
-
-local chapterNum, chapterTextNum, isChapterStart, isEventEnded = 1, 1, true, true
+-- -----------------------------------------------------------------------------------
+local currentData =
+{
+	chapterNum = 1,
+	chapterTextNum = 1,
+	isChapterStart = false,
+	isEventEnded = true
+}
 local chapterString = { "Tales of the Wanderers", "It is Not that Soldiers Are Afraid of Death" }
 
+local createButtonUI, onButton, showChat, whatIsNext, goChatBox, goChapter
+local saveB, loadB, titleB
+local bgData, bgSet, bgSheet
+
+local isFirst = true
+local sceneGroup
+
+function createButtonUI()
+	saveB = widget.newButton(
+	{
+		width = 50,
+		height = 50,
+		left = 25,
+		top = 30,
+		defaultFile = "image/ui/UI_SAVEB.png",
+        overFile = "image/ui/UI_SAVEO.png",
+		onEvent = onButton,
+		id = "save",
+	})
+
+	loadB = widget.newButton(
+	{
+		width = 50,
+		height = 50,
+		left = 25 + 70*1,
+		top = 30,
+		defaultFile = "image/ui/UI_LOADB.png",
+		overFile = "image/ui/UI_LOADO.png",
+		onEvent = onButton,
+		id = "load",	
+	})
+
+	titleB = widget.newButton(
+	{
+		width = 50,
+		height = 50,
+		left = 25 + 70*2,
+		top = 28,
+		defaultFile = "image/ui/UI_TITLEB.png",
+		overFile = "image/ui/UI_TITLEO.png",
+		onEvent = onButton,
+		id = "title",	
+	})
+
+	sceneGroup:insert(saveB)
+	sceneGroup:insert(loadB)
+	sceneGroup:insert(titleB)
+end
+
+function onButton(e)
+	if e.phase == "began" then
+		if e.target.id == "save" then
+			loadB:setEnabled( false )
+			titleB:setEnabled( false )
+			data.popUp( e.target.id, currentData )
+
+		elseif e.target.id == "load" then
+			saveB:setEnabled( false )
+			titleB:setEnabled( false )
+			data.popUp( e.target.id )
+
+		elseif e.target.id == "title" then
+			saveB:setEnabled( false )
+			loadB:setEnabled( false )
+			print("title")
+		end
+	elseif e.phase == "ended" then
+		saveB:setEnabled( true )
+		loadB:setEnabled( true )
+		titleB:setEnabled( true )
+	end
+end
+
+function goChapter()
+	composer.removeScene( "scene.loadFile" )
+	composer.gotoScene( "scene.loadFile", { time = 1600, effect = "crossFade" } )
+end
+
+function goChatBox()
+	showChat( currentData.chapterNum, currentData.chapterTextNum )	
+end
+
+function autoSave()
+	print("autoSave")
+	print("chapterNum : "..currentData.chapterNum)
+	print("chapterTextNum : "..currentData.chapterTextNum)
+	if currentData.chapterNum == 1 then
+		audio.fadeOut( { time = 2000 } )
+		currentData.chapterNum = 2
+		isChapterStart = false
+	elseif currentData.chapterNum == 2 then
+		if currentData.chapterNum == 14 then
+			currentData.chaperNum = 3
+			currentData.chapterTextNum = 1
+		else
+			currentData.chapterTextNum = currentData.chapterTextNum + 1
+
+			if currentData.chatperTextNum == 3 then
+				if currentData.isEventEnded then currentData.isEventEnded = false
+				else currentData.isEventEnded = true
+				end
+			elseif currentData.chapterTextNum == 4 then
+				if currentData.isEventEnded then currentData.isEventEnded = false
+				else currentData.isEventEnded = true
+				end
+			elseif currentData.chapterTextNum == 5 then
+				if currentData.isEventEnded then currentData.isEventEnded = false
+				else currentData.isEventEnded = true
+				end
+			elseif currentData.chapterTextNum == 8 then
+				if currentData.isEventEnded then currentData.isEventEnded = false
+				else currentData.isEventEnded = true
+				end
+			elseif currentData.chapterTextNum == 9 then
+				if currentData.isEventEnded then currentData.isEventEnded = false
+				else currentData.isEventEnded = true
+				end
+			end
+		end
+	end
+
+	data.saveData( 1, currentData )
+
+	if currentData.chapterTextNum == 1 then
+		print("goChapter")
+		timer.performWithDelay( 500, goChapter, 1 )
+	else
+		print("whatIsNext")
+		timer.performWithDelay( 500, whatIsNext, 1 )
+	end
+end
 
 function showChat( chapterNum, startLineNum )
 	local textArray = textFile[chapterNum+2][startLineNum]
 	local nameArray = textFile[1]
-	local num = 0
 
-	local createChatUI, showDialog, goNextLine, start
-	local showDialogID
+	local createChatUI, showDialog, goNext, start
+
+	local showText, showName, charImage, chatBox, onPress
+	local num = 0
+	local showDialogID, text
+	local isCurrentTextEnded
 
 	function createChatUI()
 		chatBox = display.newImage( sceneGroup, "scenario/chatBox.png", _W*0.5, _H*0.86 )
@@ -63,18 +193,20 @@ function showChat( chapterNum, startLineNum )
 		showDialogID = e.source
 
 		if string.len(showText.text) == string.len(text) then
-				timer.cancel(showDialogID)
-				isCurrentTextEnded = true
+			timer.cancel(showDialogID)
+			isCurrentTextEnded = true
 		end
 
-		showText.text = showText.text .. text:sub( string.len(showText.text)+1, string.len(showText.text)+3 )	
+		showText.text = showText.text .. text:sub( string.len(showText.text)+1, string.len(showText.text)+3 )
 	end
 
 	function goNext()
+		local n, m
 		chatBox.alpha = 1
 		isCurrentTextEnded = false
 		num = num + 1
 		showName.text = ""
+
 		if charImage then
 			charImage:removeSelf()
 			charImage = nil
@@ -83,187 +215,216 @@ function showChat( chapterNum, startLineNum )
 		if num <= table.maxn( textArray ) then
 			showText.text = ""
 
-			local n = textArray[num][1]
+			n = textArray[num][1]
 			text = textArray[num][2]
+			m = textArray[num][3]
 
 			if n == -1 then
 				chatBox.alpha = 0
+
 				if text == "bell" then
-					-- data.popUp()
 					text = ""
-					audio.play( sound.bell, { duration = 2500, onComplete = goNext, channel = 1 } )
-				elseif text == "bgm" then
+					audio.play( sound.bell, { duration = 2500, onComplete = goNext })
+				elseif text == "bar" then
 					text = ""
-					audio.play( sound.bar, { loops = -1, channel = 1 })
+					audio.play( sound.bar, { loops = -1,  } )
+					goNext()
+				elseif text == "arena" then
+					text = ""
+					audio.play( sound.arena, { loops = -1 } )
 					goNext()
 				end
 			else
 				if n == nil then
-					if textArray[num][3] then
-						showName.text = nameArray[ textArray[num][3] + 1 ]
+					if m then
+						showName.text = nameArray[textArray[num][3]+1]
 					end
 
 				else
 					showName.text = nameArray[n+1]
+
 					if n == 0 then
-						if textArray[num][3] == 1 then
+						if m == 1 then --smile
 							charImage = display.newImage( "image/charIllust/player_smile.png" )
-						elseif textArray[num][3] == 2 then
+						elseif m == 6 then -- sad
 							charImage = display.newImage( "image/charIllust/player_sad.png" )
+						elseif m == 8 then -- happy
+							charImage = display.newImage( "image/charIllust/player_happy.png" )
 						else
 							charImage = display.newImage( "image/charIllust/player_normal.png" )
 						end
-					elseif n == 1 then
-						charImage = display.newImage( "image/charIllust/ruke_normal.png")
-					elseif n == 2 then
+
+					elseif n == 1 or n == 7 then
+						if m == 1 then --laugh
+							charImage = display.newImage( "image/charIllust/ruke_laugh.png" )
+						elseif m == 2 then --shimuruk
+							charImage = display.newImage( "image/charIllust/ruke_shimuruk.png" )
+						elseif m == 3 or m == 4 then --uridungjeol
+							charImage = display.newImage( "image/charIllust/ruke_uridungjeol.png" )
+						elseif m == 5 then --musseuk
+							charImage = display.newImage( "image/charIllust/ruke_musseuk.png" )
+						elseif m == 6 then --sad
+							charImage = display.newImage( "image/charIllust/ruke_sad.png" )
+						elseif m == 7 then --eyeclosed
+							charImage = display.newImage( "image/charIllust/ruke_eyeclosed.png" )
+						else
+							charImage = display.newImage( "image/charIllust/ruke_normal.png" )
+						end
 					elseif n == 3 then
 					elseif n == 4 then
-					elseif n == 5 then
+						charImage = display.newImage( "image/charIllust/peris_armed.png")
 					elseif n == 6 then
+						if m == 1 then -- smile
+							charImage = display.newImage( "image/charIllust/peris_smile.png" )
+						elseif m == 8 then --happy
+							charImage = display.newImage( "image/charIllust/peris_happy.png" )
+						end
 					end
 				end
 
 				if charImage then
-					charImage.x, charImage.y = _W*0.5, _H-charImage.contentHeight*0.75*0.8/2
-					charImage:scale(0.75,0.75)
+					charImage.x, charImage.y = _W*0.5, _H - charImage.contentHeight * 0.75 * 0.8 / 2
+					charImage:scale(0.75, 0.75)
 					sceneGroup:insert(charImage)
 					charImage:toBack()
-					if bg then bg:toBack() end
+					if bg then bg:toBack( ) end
 				end
 
-				timer.performWithDelay( 100, showDialog, -1 )
+				timer.performWithDelay( 50, showDialog, -1 )
 			end
 		else
-			if id then timer.cancel(id) end
-			Runtime:removeEventListener( "key", press )
-			showText:removeSelf( )
+			--remove Chat Box
+			if showDialogID then timer.cancel(showDialogID) end
+			Runtime:removeEventListener( "key", onPress )
+			showText:removeSelf()
 			chatBox:removeSelf()
-			chatBox = nil
+			showName:removeSelf()
+			if charImage then charImage:removeself() end
+
+			chaBox = nil
 			isCurrentTextEnded = nil
 			textArray = nil
 			text = nil
 			showDialogID = nil
 			num = nil
-			createUI = nil
-			press = nil
+			createChatUI = nil
+			onPress = nil
 			showDialog = nil
-			start= nil
+			start = nil
 			goNext = nil
 
-			if chapterTextNum == 1 then
-			else
-			end
-			chapterTextNum = chapterTextNum + 1
+			autoSave()
 		end
 	end
 
 	function start()
 		createChatUI()
-		Runtime:addEventListener( "key", onKey )
+		Runtime:addEventListener( "key", onPress )
 		goNext()
+	end
+
+	function onPress(e)
+		if e.phase == "down" then
+			if e.keyName == "space" then
+				if isCurrentTextEnded then goNext()
+				else showText.text = text isCurrentTextEnded = true
+				end
+			end
+		end
 	end
 
 	start()
 end
 
-function onKey(e)
-	local keyName = e.keyName
+function whatIsNext()
+	local db = data.loadData(1)
 
-	if e.phase == "down" then
-		if keyName == "space" then
-			if isCurrentTextEnded then
-				goNext()
+	currentData.chapterNum = db.chapterNum
+	currentData.chapterTextNum = db.chapterTextNum
+	currentData.isChapterStart = db.isChapterStart
+	currentData.isEventEnded = db.isEventEnded
+	db = nil
+
+	print("whatIsNext")
+	print(currentData.chapterNum)
+	print(currentData.chapterTextNum)
+	print(currentData.isChapterStart)
+	print(currentData.isEventEnded)
+
+	if currentData.isEventEnded then
+		if not currentData.isChapterStart then
+			currentData.isChapterStart = false
+
+			if ( not isFirst or not isEventEnded ) and bg then
+				bg:removeSelf()
+				bg = nil
 			else
-				showText.text = text
-				isCurrentTextEnded = true
+				isFirst = false
 			end
-		end
-	end
-end
 
-function onSaveB()
-end
-
-function createSaveB()
-	saveB = widget.newButton(
-	{
-		left = 0,
-		top = 0,
-		defaultFile = "image/ui/saveB.png",
-		overFile = "image/ui/saveBO.png",
-		onRelease = onSaveB
-	})
-
-	saveB:scale(0.5, 0.5)
-end
-
-function goChatBox()
-	showChat( chapterNum, chapterTextNum )
-	chapterTextNum = chapterTextNum + 1
-end
-
-function start()
-	-- isEventEnded : 씬을 바꿀 일이 있냐?
-	-- isChapterStart : 새로운 챕터를 시작해야 하냐? ( 대화위주 )
-	if isEventEnded then
-		if isChapterStart then
-			if bg then bg:removeSelf() end
-
-			if chapterNum == 1 then
-				bg = display.newImage( "image/bg/bar.png" )
-
-				chapterEffect.showChapter( chapterNum, chapterString[chapterNum] )
-				timer.performWithDelay( 7700, goChatBox ,1 )
-			
-			elseif chapterNum == 2 then
-				if chapterTextNum == 1 then
-					bg = display.newRect( 0, 0, _W, _H )
-					bg:setFillColor( CC("000000") )
-
-					chapterEffect.showChapter( chapterNum, chapterString[chapterNum] )
-
-					timer.performWithDelay( 7700, goChatBox ,1 )
-				elseif chaptertextNum == 5 then
-					bg = display.newRect( 0, 0, _W, _H )
-					bg:setFillColor( CC("000000") )
-				elseif chapterTextNum == 6 or chapterTextNum == 10 or chapterTextNum == 12 or chapterTextNum == 14 then
+			if currentData.chapterNum == 1 then
+				if currentData.chapterTextNum == 1 then
 					bg = display.newImage( "image/bg/bar.png" )
-				elseif chapterTextNum == 7 or chapterTextNum == 11 or chapterTextNum == 13 then
-					-- in house
+
+					chapterEffect.showChapter( 1, chapterString[1] )
+					timer.performWithDelay( 7700, goChatBox, 1 )
 				end
-			elseif chapterNum == 3 then
+
+			elseif currentData.chapterNum == 2 then
+				if currentData.chapterTextNum == 1 then
+					bg = display.newRect( 0, 0, _W, _H )
+					bg:setFillColor( CC("000000") )
+
+					chapterEffect.showChapter( 2, chapterString[2] )
+
+					timer.performWithDelay( 7700, goChatBox, 1 )
+
+				elseif currentData.chapterTextNum == 2 then
+					bg = display.newImage( "image/bg/arena.png" )
+					bg:scale(2,2)
+
+				elseif currentData.chapterTextNum == 5 then
+					bg = display.newRect( 0, 0, _W, _H )
+					bg:setFillColor( CC("000000") )
+				elseif currentData.chapterTextNum == 6 or currentData.chapterTextNum == 10 or currentData.chapterTextNum == 12 or currentData.chapterTextNum == 14 then
+					bg = display.newImage( "image/bg/bar.png" )
+				elseif currentData.chapterTextNum == 7 or currentData.chapterTextNum == 11 or currentData.chapterTextNum == 13	then
+					bg = display.newSprite( bgSheet, bgData )
+				end
+
+			elseif currentData.chapterNum == 3 then
 			end
+
+			if currentData.chapterTextNum ~= 1 then
+				timer.performWithDelay( 400, goChatBox, 1 )
+			end
+
+			bg.x, bg.y = _W*0.5, _H*0.5
+			sceneGroup:insert(bg)
 		else
-			if chapterNum == 2 then
-				if chapterTextNum == 1 then
-				elseif chapterTextNum == 2 then
-					-- 병사 시험 장면
-
-				elseif chapterTextNum == 3 then
-					-- 전투
-
-				elseif chapterTextNum == 4 then
-					-- 몇 걸음 걸어간다
-
-				elseif chapterTextNum == 5 then
-					-- A가 뛴다
-
-				elseif chapterTextNum == 8 then
-					-- 루크가 움직인당
-				end
-
-			elseif chapterNum == 3 then
-			end
+			autoSave()
 		end
-		bg.x, bg.y = _W*0.5, _H*0.5
-		sceneGroup:insert( bg )
+
 	else
+		if currentData.chapterNum == 2 then
+			if currentData.chapterTextNum == 3 then
+				-- battle
+			elseif currentData.chapterTextNum == 4 then
+				-- step by step
+			elseif currentData.chapterTextNum == 5 then
+				-- A running
+			elseif currentData.chatperTextNum == 8 then
+			end
+		elseif currentData.chapterNum == 3 then
+		end
 	end
-	sceneGroup:insert(saveB)
+
 	saveB:toFront( )
+	loadB:toFront( )
+	titleB:toFront( )
 end
 
--- -----------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
 
@@ -272,6 +433,9 @@ function scene:create( event )
 
 	sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
+	bgData = { width = 640, height = 360, numFrames = 4, sheetContentWidth = 2560, sheetContentHeight = 360 }
+	bgSet = { name = "default", start = 1, count = 4, time = 1000, loopCount = 0 }
+	bgSheet = graphics.newImageSheet( "image/bg/ruke_house.png", bgData )
 
 end
 
@@ -286,11 +450,8 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-
-		-- music?
-		createSaveB()
-		start()
-
+		createButtonUI()
+		whatIsNext()
 	end
 end
 

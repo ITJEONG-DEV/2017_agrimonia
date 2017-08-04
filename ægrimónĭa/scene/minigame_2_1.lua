@@ -14,7 +14,7 @@ local mH=20
 local dealed -- 딜이 들어온 방향(1=W, 2=A, 3=S, 4=D)
 local delayTime=3000
 local startFlag=0
-local dealFlag=0, mobFlag=0
+local dealFlag, mobFlag= 0, 0
 local bg, bg2, title, foot
 local bt1, bt2
 local mt1, mt2, mt3, mt4, mt5, mt6, mt7, mt8
@@ -77,7 +77,7 @@ function dealingE()
 end
 
 function subPlayer() -- 플레이어 체력 깎음
-	heart[pH]=display.newSprite(hpImage, {name="dying" start=1, count=12, time=100, loopCount=1, loopDirection="forward"})
+	heart[pH]=display.newSprite(hpImage, {name="dying", start=1, count=12, time=100, loopCount=1, loopDirection="forward"})
 	mobFlag=0
 	if pH>=1 then
 		pH=pH-1
@@ -183,7 +183,7 @@ end
 
 function onKeyEvent(event) -- 키를 입력받음
 	if event.phase=="down" then
-		if event.keyName="space" then
+		if event.keyName=="space" then
 			if startFlag==0 then
 				onGameStart()
 			end
@@ -216,13 +216,13 @@ function onKeyEvent(event) -- 키를 입력받음
 				mobFlag=0
 			end
 		end
-		if event.keyName="q" then
+		if event.keyName=="q" then
 			if dealFlag==0 then
 				dealFlag=1
 				dealingQ()
 			end
 		end
-		if event.keyName="e" then
+		if event.keyName=="e" then
 			if dealFlag==0 then
 				dealFlag=1
 				dealingE()
