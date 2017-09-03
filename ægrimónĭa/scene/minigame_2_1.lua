@@ -30,7 +30,7 @@ local bg, title, bgm
 local tt1 = {}
 local tt2 = {}
 local tp
-local phase = 1
+local phase = 2
 
 function showImage()
 	bg = display.newImage( sceneGroup, "image/bg/chapter2_1game.png", _W*0.5, _H*0.5 )
