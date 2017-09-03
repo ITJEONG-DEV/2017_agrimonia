@@ -9,6 +9,20 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 local _W, _H = display.contentWidth, display.contentHeight
+local pH=5
+local mH=20
+local dealed -- 딜이 들어온 방향(1=W, 2=A, 3=S, 4=D)
+local delayTime=3000
+local startFlag=0
+local dealFlag, mobFlag= 0, 0
+local bg, bg2, title, foot
+local bt1, bt2
+local mt1, mt2, mt3, mt4, mt5, mt6, mt7, mt8
+local bgm, cgm
+local hpImage=graphics.newImageSheet("image/charSprite/HP_UI_strip12png", {width=128, height=128, numFrames=12})
+local currentKnight
+local Knight={}
+local heart={}
 
 local CC = function (hex)
 	local r = tonumber( hex:sub(1,2), 16 ) / 255
@@ -30,20 +44,17 @@ local bg, title, bgm
 local tt1 = {}
 local tt2 = {}
 local tp
-local phase = 2
+local phase = 1
 
 function showImage()
 	bg = display.newImage( sceneGroup, "image/bg/chapter2_1game.png", _W*0.5, _H*0.5 )
 	bg.alpha = 0.8
 
 	title = display.newText( sceneGroup, "수련생 A와 대련", _W*0.5, _H*0.15, font.squareEB, 40 )
-
 	tt1[1] = display.newText( sceneGroup, "게임 방법", _W*0.1, _H*0.325, font.squareEB, 30 )
 	tt1[2] = display.newText( sceneGroup, "조작키", _W*0.68, _H*0.325, font.squareEB, 30 )
-
 	tt2[1] = display.newText( sceneGroup, "수련생 A가 상하좌우로 공격을 합니다.\n\n수련생 A는 공격 전에 동작이 느려집니다.\n\n그 틈을 타서 공격하고, 수련생 A의 공격을 막아야합니다.\n\n수련생 A의 공격은 점점 빨라집니다.", _W*0.25, _H*0.5, font.squareEB, 20 )
 	tt2[2] = display.newText( sceneGroup, "W : 상단 방어        S : 하단 방어\n\nA : 좌측 방어         D : 우측 방어\n\nQ : 빠르고 약한 공격\n\nE : 강하고 느린 공격", _W*0.75, _H*0.5, font.squareEB, 20 )
-
 	tp = display.newText( sceneGroup, "PRESS SPACEBAR TO START", _W*0.5, _H*0.85, font.squareEB, 30 )
 end
 
@@ -68,6 +79,10 @@ function deleteImage()
 	phase = phase + 1
 end
 
+
+-- -----------------------------------------------------------------------------------
+-- basic settttting!
+-- -----------------------------------------------------------------------------------
 function onKey(e)
 	if phase == 1 then
 		if e.phase == "down" then
@@ -78,7 +93,6 @@ function onKey(e)
 	elseif phase == 2 then
 	end
 end
-
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -102,11 +116,12 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		bgm = audio.play( sound.chi, { loops = -1 } )
-
+		bgm=audio.play(sound.schi, {loops=-1})
 		showImage()
+		-- music?
 
 		Runtime:addEventListener( "key", onKey )
+
 	end
 end
 
@@ -139,6 +154,55 @@ function scene:destroy( event )
 
 end
 
+function onKeyEvent(event) -- 키를 입력받음
+	if event.phase=="down" then
+		if event.keyName=="space" then
+			if startFlag==0 then
+				onGameStart()
+			end
+		end
+		if event.keyName=="w" then
+			if mobFlag==1 and dealed~=1 then
+				subPlayer()
+			else
+				mobFlag=0
+			end
+		end
+		if event.keyName=="a" then
+			if mobFlag==1 and dealed~=2 then
+				subPlayer()
+			else
+				mobFlag=0
+			end
+		end
+		if event.keyName=="s" then
+			if mobFlag==1 and dealed~=3 then
+				subPlayer()
+			else
+				mobFlag=0
+			end
+		end
+		if event.keyName=="d" then
+			if mobFlag==1 and dealed~=4 then
+				subPlayer()
+			else
+				mobFlag=0
+			end
+		end
+		if event.keyName=="q" then
+			if dealFlag==0 then
+				dealFlag=1
+				dealingQ()
+			end
+		end
+		if event.keyName=="e" then
+			if dealFlag==0 then
+				dealFlag=1
+				dealingE()
+			end
+		end
+	end
+end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners

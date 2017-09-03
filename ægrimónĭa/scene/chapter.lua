@@ -311,10 +311,6 @@ function showChat( chapterNum, startLineNum )
 					charImage:scale(0.75, 0.75)
 					sceneGroup:insert(charImage)
 					charImage:toBack()
-
-					if n == 0 then charImage.y = charImage.y + 20 end
-					if n == 1 or n == 7 then charImage.y = charImage.y - 25 end
-					if n == 2 or n == 9 then charImage.y = charImage.y - 35 end
 					if bg then bg:toBack( ) end
 				end
 
@@ -384,6 +380,14 @@ function whatIsNext()
 			currentData.isChapterStart = false
 			if chapterTextNum == 1 then isFirst = true end
 
+			if ( not isFirst or not isEventEnded ) and bg then
+				bg:removeSelf()
+				bg = nil
+				isFirst = true
+			else
+				isFirst = false
+			end
+
 			if currentData.chapterNum == 1 then
 				if currentData.chapterTextNum == 1 then
 					bg = display.newImage( "image/bg/bar1.png" )
@@ -403,6 +407,7 @@ function whatIsNext()
 
 				elseif currentData.chapterTextNum == 2 then
 					bg = display.newImage( "image/bg/arena.png" )
+
 				elseif currentData.chapterTextNum == 5 then
 					bg = display.newRect( 0, 0, _W, _H )
 					bg:setFillColor( CC("000000") )
@@ -414,7 +419,7 @@ function whatIsNext()
 
 			elseif currentData.chapterNum == 3 then
 			end
-                      
+
 			if currentData.chapterTextNum ~= 1 then
 				timer.performWithDelay( 400, goChatBox, 1 )
 			end
